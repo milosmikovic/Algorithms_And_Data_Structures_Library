@@ -38,9 +38,9 @@ struct Foo
         return *this;
     }
 
-
-    int a;
-    int b;
+    private:
+        int a;
+        int b;
 };
 
 std::ostream& operator<<(std::ostream &os, const Foo &foo)
