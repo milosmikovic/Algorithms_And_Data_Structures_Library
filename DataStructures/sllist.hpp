@@ -14,7 +14,7 @@ template <typename T> class sllist;
 template <typename T> std::ostream& operator<<(std::ostream&, const sllist<T>&); 
 
 template <typename T>
-class Node
+class Node final
 {
     friend class sllist<T>;
     friend std::ostream& operator<< <T> (std::ostream&, const sllist<T>&);
@@ -34,23 +34,93 @@ class sllist final
 
     friend std::ostream& operator<< <T> (std::ostream&, const sllist<T>&);
 
+    private:
+        class iterator;
+        class const_iterator;
+
     public:
-        sllist() : head(nullptr) {} // def ctor
+        typedef T l_type;
+        typedef iterator iterator;
+        typedef const_iterator const_iterator;
+
+        sllist() : head(nullptr), sz(0) {} // def ctor
         sllist(const sllist&); // copy ctor
-        sllist(sllist&&); // move ctor
+        sllist(sllist&&) noexcept; // move ctor
         ~sllist(); // dctor
 
         sllist& operator=(const sllist&); // cpy=
-        sllist& operator=(sllist&&); // move=
+        sllist& operator=(sllist&&) noexcept; // move=
 
         T& operator[](size_t);
         const T& operator[](size_t) const;
 
-        template <typename U>
-        void push_back(U&&);
+        // iterator interface
+        iterator begin() { return iterator(head); }
+        const_iterator cbegin() const { return const_iterator(head); }
+
+        iterator end() { return iterator(nullptr); }
+        const_iterator cend() const { return const_iterator(nullptr); }
+
+        size_t size() const { return sz; }
+        template <typename U> void push_back(U&&);
+        void pop_back(); // pop_back is so unefficient in singly linked list, complexity O(n)
+        void clear();
+        template <typename U> void insert(size_t, U&&);
 
     private:
+
+        class iterator
+        {
+            public:
+                iterator(Node<T> *it) : it(it) {}
+
+                T& operator*() const 
+                {
+                    return it->data;
+                }
+
+                iterator& operator++()
+                {
+                    it = it->next;
+                    return *this;
+                }
+
+                bool operator!=(const iterator &rhs) const
+                {
+                    return it != rhs.it;
+                }
+
+            private:
+                Node<T> *it;
+        };
+
+        class const_iterator
+        {
+            public:
+                const_iterator(Node<T> *it) : it(it) {}
+
+                const T& operator*() const 
+                {
+                    return it->data;
+                }
+
+                const_iterator& operator++()
+                {
+                    it = it->next;
+                    return *this;
+                }
+
+                bool operator!=(const const_iterator &rhs) const
+                {
+                    return it != rhs.it;
+                }
+
+            private:
+                Node<T> *it;
+        };
+
         Node<T> *head;
+        size_t sz;
 
 };
 
@@ -68,7 +138,7 @@ std::ostream& operator<<(std::ostream &os, const sllist<T> &list)
 
 // cpy ctor
 template <typename T>
-sllist<T>::sllist(const sllist &rhs) : head(nullptr)
+sllist<T>::sllist(const sllist &rhs) : head(nullptr), sz(0)
 {
     if(rhs.head != nullptr)
     {
@@ -83,9 +153,10 @@ sllist<T>::sllist(const sllist &rhs) : head(nullptr)
 
 // move ctor
 template <typename T>
-sllist<T>::sllist(sllist &&rhs) : head(rhs.head)
+sllist<T>::sllist(sllist &&rhs) noexcept : head(rhs.head), sz(rhs.sz)
 {
     rhs.head = nullptr;
+    rhs.sz = 0;
 }
 
 // cpy=
@@ -101,7 +172,9 @@ sllist<T>& sllist<T>::operator=(const sllist &rhs)
             delete current_node;
             current_node = next_node;
         }
+
         head = nullptr;
+        sz = 0;
 
         current_node = rhs.head;
         while(current_node)
@@ -116,7 +189,7 @@ sllist<T>& sllist<T>::operator=(const sllist &rhs)
 
 // move=
 template <typename T>
-sllist<T>& sllist<T>::operator=(sllist &&rhs)
+sllist<T>& sllist<T>::operator=(sllist &&rhs) noexcept
 {
     if(this != &rhs)
     {
@@ -127,8 +200,12 @@ sllist<T>& sllist<T>::operator=(sllist &&rhs)
             delete current_node;
             current_node = next_node;
         }
+
         head = rhs.head;
+        sz = rhs.sz;
+
         rhs.head = nullptr;
+        rhs.sz = 0;
     }
 
     return *this;
@@ -192,6 +269,7 @@ void sllist<T>::push_back(U &&data)
     if(head == nullptr)
     {
         head = new_node;
+        ++sz;
         return;
     }
 
@@ -202,8 +280,84 @@ void sllist<T>::push_back(U &&data)
     }
 
     tmp_node->next = new_node;
+
+    ++sz;
 }
 
+template <typename T>
+template <typename U>
+void sllist<T>::insert(size_t position, U &&data)
+{
+    if(position > sz)
+    {
+        throw std::out_of_range("Inserting on positon:" + std::to_string(position) + " while list have:" + std::to_string(sz) + " elements.");
+    }
+
+    if(position == 0)
+    {
+        Node<T>* new_node = new Node<T>(std::forward<U>(data));
+        new_node->next = head;
+        head = new_node;
+        ++sz;
+        return;
+    }
+
+    Node<T>* current_node = head;
+    for(size_t i = 1; i < position; ++i)
+    {
+        current_node = current_node->next;
+    }
+
+    Node<T>* new_node = new Node<T>(std::forward<U>(data));
+    new_node->next = current_node->next;
+    current_node->next = new_node;
+    ++sz;
+}
+
+template <typename T>
+void sllist<T>::pop_back()
+{
+    if(head == nullptr)
+    {    
+        return;
+    }
+    else if(head->next == nullptr)
+    {
+        delete head;
+        head = nullptr;
+        --sz;
+        return;
+    }
+    else
+    {
+        Node<T> *current_node = head;
+        while(current_node->next->next)
+        {
+            current_node = current_node->next;
+        }
+
+        delete current_node->next;
+        current_node->next = nullptr;
+        --sz;
+    }
+}
+
+template <typename T>
+void sllist<T>::clear()
+{
+    if(head == nullptr)
+        return;
+
+    Node<T> *current_node = head;
+    while(current_node != nullptr)
+    {   
+        Node<T> *next_node = current_node->next;
+        delete current_node;
+        current_node = next_node;
+    }
+    head = nullptr;
+    sz = 0;
+}
 
 }
 

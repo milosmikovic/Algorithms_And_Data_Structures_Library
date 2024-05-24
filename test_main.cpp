@@ -1,5 +1,6 @@
 #include "DataStructures/vector.hpp"
 #include "DataStructures/sllist.hpp"
+#include <list>
 
 struct Foo
 {
@@ -64,6 +65,9 @@ std::ostream& operator<<(std::ostream &os, const Foo &foo)
 int main(int argc, char **argv)
 {
 
+    std::list<int> l;
+    // erase(iterator), insert(iterator, value)
+
     // adstl::vector<int>::change_realloc_size(3);
 
     // adstl::vector<int> vec1;
@@ -113,12 +117,14 @@ int main(int argc, char **argv)
     sl1.push_back(Foo(3,4, new int(3)));
     sl1.push_back(Foo(4,5, new int(4)));
 
+
     adstl::sllist<Foo> sl2 = sl1;
     adstl::sllist<Foo> sl3 = std::move(sl1);
     adstl::sllist<Foo> sl4;
     adstl::sllist<Foo> sl5;
     sl4 = sl3;
     sl5 = std::move(sl3);
+
 
     std::cout << sl2 << std::endl;
     std::cout << sl4 << std::endl;
@@ -139,10 +145,75 @@ int main(int argc, char **argv)
     a.change_a(123);
 
     std::cout << sl5 << std::endl;
+    
 
-    const Foo &a1 = sl5[1];
-    // a1.change_a(23);
-    std::cout << a1 << std::endl;
+    // BEGIN_ITERATOR_TEST
+
+    // adstl::sllist<Foo>::iterator iter1 = sl5.begin();
+    // // adstl::sllist<Foo>::const_iterator iter2 = sl5.cbegin();
+
+    // auto &item1 = *iter1;
+    // // auto &item2 = *iter2;
+    // item1.change_a(23);
+    // // item2.change_a(23);
+
+
+    // while(iter1 != sl5.end())
+    // {
+    //     std::cout << *iter1 << std::endl;
+    //     ++iter1;
+    // }
+    // std::cout << "###" << std::endl;
+    // for(auto it = sl5.begin(); it != sl5.end();++it)
+    // {
+    //     std::cout << *it << std::endl;
+    //     *it = Foo();
+    // }
+
+    // const adstl::sllist<Foo> sl6 = sl5;
+    // for(auto it = sl6.cbegin(); it != sl6.cend();++it)
+    // {
+    //     std::cout << *it << std::endl;
+    //     // *it = Foo();
+    // }
+
+    // END_ITERATOR_TEST
+
+    sl5.pop_back();
+    sl5.pop_back();
+    sl5.pop_back();
+    sl5.push_back(Foo(321,321));
+    std::cout << sl5 << std::endl;
+    sl5.push_back(Foo(111,111));
+    sl5.push_back(Foo(222,222));
+    sl5.pop_back();
+    sl5.push_back(Foo(333,333));
+    std::cout << sl5 << std::endl;
+    sl5.clear();
+    std::cout << sl5 << std::endl;
+
+    sl5.push_back(Foo(111,111));
+    sl5.push_back(Foo(222,222));
+    sl5.push_back(Foo(333,333));
+    std::cout << sl5 << std::endl;
+    sl5.insert(0, Foo(000,000));
+    std::cout << sl5 << std::endl;
+    sl5.insert(1, Foo(110,110));
+    std::cout << sl5 << std::endl;
+    sl5.insert(3, Foo(220,220));
+    std::cout << sl5 << std::endl;
+    sl5.insert(6, Foo(220,220));
+    std::cout << sl5 << std::endl;
+
+    try
+    {
+        sl5.insert(8, Foo(220,220));
+    }
+    catch(const std::exception &e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+    std::cout << sl5 << std::endl;
 
 
     return 0;
