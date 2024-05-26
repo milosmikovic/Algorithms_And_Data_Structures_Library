@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include "config.hpp" // Include the configuration header
 
 namespace adstl
 {
@@ -39,6 +40,7 @@ class vector final
 
         void push_back(const T&);  // copy the element
         void push_back(T&&); // move the element
+        void pop_back();
 
         // add elements
         size_t size() const { return first_free - elements; }
@@ -183,6 +185,15 @@ inline void vector<T>::push_back(T &&elem)
 
     // construct a copy of s in the element to which first_free points
     alloc.construct(first_free++, std::move(elem));  
+}
+
+template <typename T>
+inline void vector<T>::pop_back()
+{
+    if (size() > 0) {
+        // Destroy the last element in the vector
+        alloc.destroy(--first_free);
+    }
 }
 
 

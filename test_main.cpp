@@ -1,6 +1,7 @@
 #include "DataStructures/vector.hpp"
 #include "DataStructures/sllist.hpp"
-#include <list>
+#include "DataStructures/stack.hpp"
+
 
 struct Foo
 {
@@ -8,8 +9,8 @@ struct Foo
 
     Foo(int a = 0, int b = 0, int *memory = new int(0)) : a(a), b(b), memory(memory) {}
     
-    Foo(const Foo &rhs) : a(rhs.a), b(rhs.b), memory(new int(*rhs.memory)) {std::cout << "cpy=" << std::endl;}
-    Foo(Foo &&rhs) noexcept : a(rhs.a), b(rhs.b), memory(rhs.memory) { rhs.memory = nullptr; std::cout << "move=" << std::endl;}
+    Foo(const Foo &rhs) : a(rhs.a), b(rhs.b), memory(new int(*rhs.memory)) {std::cout << "cpy Foo()" << std::endl;}
+    Foo(Foo &&rhs) noexcept : a(rhs.a), b(rhs.b), memory(rhs.memory) { rhs.memory = nullptr; std::cout << "move Foo()" << std::endl;}
 
     ~Foo() { delete memory; std::cout << "~Foo()" << std::endl;}
     
@@ -65,7 +66,6 @@ std::ostream& operator<<(std::ostream &os, const Foo &foo)
 int main(int argc, char **argv)
 {
 
-    std::list<int> l;
     // erase(iterator), insert(iterator, value)
 
     // adstl::vector<int>::change_realloc_size(3);
@@ -112,39 +112,39 @@ int main(int argc, char **argv)
     // std::cout << fVec2 << std::endl;
 
 
-    adstl::sllist<Foo> sl1;
-    sl1.push_back(Foo(1,2, new int(2)));
-    sl1.push_back(Foo(3,4, new int(3)));
-    sl1.push_back(Foo(4,5, new int(4)));
+    // adstl::sllist<Foo> sl1;
+    // sl1.push_back(Foo(1,2, new int(2)));
+    // sl1.push_back(Foo(3,4, new int(3)));
+    // sl1.push_back(Foo(4,5, new int(4)));
 
 
-    adstl::sllist<Foo> sl2 = sl1;
-    adstl::sllist<Foo> sl3 = std::move(sl1);
-    adstl::sllist<Foo> sl4;
-    adstl::sllist<Foo> sl5;
-    sl4 = sl3;
-    sl5 = std::move(sl3);
+    // adstl::sllist<Foo> sl2 = sl1;
+    // adstl::sllist<Foo> sl3 = std::move(sl1);
+    // adstl::sllist<Foo> sl4;
+    // adstl::sllist<Foo> sl5;
+    // sl4 = sl3;
+    // sl5 = std::move(sl3);
 
 
-    std::cout << sl2 << std::endl;
-    std::cout << sl4 << std::endl;
-    std::cout << sl5 << std::endl;
+    // std::cout << sl2 << std::endl;
+    // std::cout << sl4 << std::endl;
+    // std::cout << sl5 << std::endl;
 
-    std::cout << sl5[1] << std::endl;
+    // std::cout << sl5[1] << std::endl;
 
-    try
-    {
-        std::cout << sl5[3] << std::endl;
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
+    // try
+    // {
+    //     std::cout << sl5[3] << std::endl;
+    // }
+    // catch(const std::exception& e)
+    // {
+    //     std::cerr << e.what() << std::endl;
+    // }
     
-    Foo &a = sl5[1];
-    a.change_a(123);
+    // Foo &a = sl5[1];
+    // a.change_a(123);
 
-    std::cout << sl5 << std::endl;
+    // std::cout << sl5 << std::endl;
     
 
     // BEGIN_ITERATOR_TEST
@@ -179,42 +179,57 @@ int main(int argc, char **argv)
 
     // END_ITERATOR_TEST
 
-    sl5.pop_back();
-    sl5.pop_back();
-    sl5.pop_back();
-    sl5.push_back(Foo(321,321));
-    std::cout << sl5 << std::endl;
-    sl5.push_back(Foo(111,111));
-    sl5.push_back(Foo(222,222));
-    sl5.pop_back();
-    sl5.push_back(Foo(333,333));
-    std::cout << sl5 << std::endl;
-    sl5.clear();
-    std::cout << sl5 << std::endl;
+    // sl5.pop_back();
+    // sl5.pop_back();
+    // sl5.pop_back();
+    // sl5.push_back(Foo(321,321));
+    // std::cout << sl5 << std::endl;
+    // sl5.push_back(Foo(111,111));
+    // sl5.push_back(Foo(222,222));
+    // sl5.pop_back();
+    // sl5.push_back(Foo(333,333));
+    // std::cout << sl5 << std::endl;
+    // sl5.clear();
+    // std::cout << sl5 << std::endl;
 
-    sl5.push_back(Foo(111,111));
-    sl5.push_back(Foo(222,222));
-    sl5.push_back(Foo(333,333));
-    std::cout << sl5 << std::endl;
-    sl5.insert(0, Foo(000,000));
-    std::cout << sl5 << std::endl;
-    sl5.insert(1, Foo(110,110));
-    std::cout << sl5 << std::endl;
-    sl5.insert(3, Foo(220,220));
-    std::cout << sl5 << std::endl;
-    sl5.insert(6, Foo(220,220));
-    std::cout << sl5 << std::endl;
+    // sl5.push_back(Foo(111,111));
+    // sl5.push_back(Foo(222,222));
+    // sl5.push_back(Foo(333,333));
+    // std::cout << sl5 << std::endl;
+    // sl5.insert(0, Foo(000,000));
+    // std::cout << sl5 << std::endl;
+    // sl5.insert(1, Foo(110,110));
+    // std::cout << sl5 << std::endl;
+    // sl5.insert(3, Foo(220,220));
+    // std::cout << sl5 << std::endl;
+    // sl5.insert(6, Foo(220,220));
+    // std::cout << sl5 << std::endl;
 
-    try
-    {
-        sl5.insert(8, Foo(220,220));
-    }
-    catch(const std::exception &e)
-    {
-        std::cout << e.what() << std::endl;
-    }
-    std::cout << sl5 << std::endl;
+    // try
+    // {
+    //     sl5.insert(8, Foo(220,220));
+    // }
+    // catch(const std::exception &e)
+    // {
+    //     std::cout << e.what() << std::endl;
+    // }
+    // std::cout << sl5 << std::endl;
 
+    // STACK TESTING
+
+    adstl::stack<Foo> s;
+    
+    s.push(Foo(1,2));
+    s.push(Foo(2,3));
+    s.push(Foo(123,123));
+    s.push(Foo(321,312));
+    s.push(Foo(321,312));
+    s.pop();
+
+    std::cout << s.top() << std::endl;
+    std::cout << s.size() << std::endl;
+    std::cout << s << std::endl;
+    
 
     return 0;
 }

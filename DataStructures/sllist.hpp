@@ -6,6 +6,7 @@
 #define SLLIST_H
 
 #include <iostream>
+#include "config.hpp" // Include the configuration header
 
 namespace adstl
 {
@@ -226,7 +227,9 @@ T& sllist<T>::operator[](size_t index)
         current_node = current_node->next;
         --current_index;
     }
+    #ifdef ADSTL_THROWABLE
     throw std::out_of_range("Index:" + std::to_string(index) + " is out of range");
+    #endif
 }
 
 // op []
@@ -244,7 +247,9 @@ const T& sllist<T>::operator[](size_t index) const
         current_node = current_node->next;
         --current_index;
     }
+    #ifdef ADSTL_THROWABLE
     throw std::out_of_range("Index:" + std::to_string(index) + " is out of range");
+    #endif
 }
 
 template <typename T>
@@ -290,7 +295,10 @@ void sllist<T>::insert(size_t position, U &&data)
 {
     if(position > sz)
     {
+        #ifdef ADSTL_THROWABLE
         throw std::out_of_range("Inserting on positon:" + std::to_string(position) + " while list have:" + std::to_string(sz) + " elements.");
+        #endif
+        return;
     }
 
     if(position == 0)

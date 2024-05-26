@@ -11,7 +11,7 @@ TARGET = test_main
 SRCS = test_main.cpp
 
 # Header files
-HEADERS = DataStructures/vector.hpp DataStructures/sllist.hpp
+HEADERS = DataStructures/vector.hpp DataStructures/sllist.hpp DataStructures/stack.hpp DataStructures/config.hpp 
 
 # Object files (derived from source files)
 OBJS = $(SRCS:.cpp=.o)
