@@ -25,7 +25,12 @@ class stack final
 
         typedef T s_type;
 
-        stack() : data() {}
+        stack() : data() {} // def ctor
+        stack(const stack&); // cpy ctor
+        stack(stack&&); // move ctor
+
+        stack& operator=(const stack&); // cpy=
+        stack& operator=(stack&&);
 
         template <typename U> void push(U&&);
         void pop();
@@ -47,6 +52,29 @@ std::ostream& operator<<(std::ostream &os, const stack<T> &stack)
     return os;
 }
 
+// cpy ctor
+template <typename T>
+stack<T>::stack(const stack &rhs) : data(rhs.data) {}
+
+// move ctor
+template <typename T>
+stack<T>::stack(stack &&rhs) : data(std::move(rhs.data)) {}
+
+// cpy=
+template <typename T>
+stack<T>& stack<T>::operator=(const stack& rhs)
+{
+    data = rhs.data;
+    return *this;
+}
+
+// move=
+template <typename T>
+stack<T>& stack<T>::operator=(stack &&rhs)
+{
+    data = std::move(rhs.data);
+    return *this;
+}
 
 template <typename T>
 template <typename U>
@@ -105,6 +133,7 @@ size_t stack<T>::size() const
 {
     return data.size();
 }
+
 
 
 }

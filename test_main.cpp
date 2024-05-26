@@ -229,6 +229,20 @@ int main(int argc, char **argv)
     std::cout << s.top() << std::endl;
     std::cout << s.size() << std::endl;
     std::cout << s << std::endl;
+
+    adstl::stack<Foo> s1 = std::move(s);
+    // std::cout << s.top() << std::endl;
+    std::cout << s1 << std::endl;
+
+    adstl::stack<Foo> s2;
+    s2 = s1;
+
+    adstl::stack<Foo> s3;
+    s3 = std::move(s1);
+
+    // std::cout << s1 << std::endl;
+    std::cout << s3 << std::endl;
+
     
 
     return 0;
