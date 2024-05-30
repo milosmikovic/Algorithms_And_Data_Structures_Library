@@ -258,6 +258,8 @@ int main(int argc, char **argv)
         // *b = Foo();
     }
     std::cout << std::endl;
+
+    std::cout << vec << std::endl;
     
 
     return 0;

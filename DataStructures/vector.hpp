@@ -148,7 +148,7 @@ size_t vector<T>::reallocate_size = 2;
 template <typename T>
 std::ostream& operator<<(std::ostream &os, const vector<T> &rhs)
 {
-    for(T *b = rhs.begin(); b != rhs.end(); ++b)
+    for(typename vector<T>::const_iterator b = rhs.cbegin(); b != rhs.cend(); ++b)
     {
         os << *b << " ";
     }
