@@ -7,7 +7,7 @@ struct Foo
 {
     friend std::ostream& operator<<(std::ostream&, const Foo&);
 
-    Foo(int a = 0, int b = 0, int *memory = new int(0)) : a(a), b(b), memory(memory) {}
+    explicit Foo(int a = 0, int b = 0, int *memory = new int(0)) : a(a), b(b), memory(memory) { std::cout << "def Foo()" << std::endl;}
     
     Foo(const Foo &rhs) : a(rhs.a), b(rhs.b), memory(new int(*rhs.memory)) {std::cout << "cpy Foo()" << std::endl;}
     Foo(Foo &&rhs) noexcept : a(rhs.a), b(rhs.b), memory(rhs.memory) { rhs.memory = nullptr; std::cout << "move Foo()" << std::endl;}
@@ -217,32 +217,47 @@ int main(int argc, char **argv)
 
     // STACK TESTING
 
-    adstl::stack<Foo> s;
+    // adstl::stack<Foo> s;
     
-    s.push(Foo(1,2));
-    s.push(Foo(2,3));
-    s.push(Foo(123,123));
-    s.push(Foo(321,312));
-    s.push(Foo(321,312));
-    s.pop();
+    // s.push(Foo(1,2));
+    // s.push(Foo(2,3));
+    // s.push(Foo(123,123));
+    // s.push(Foo(321,312));
+    // s.push(Foo(321,312));
+    // s.pop();
 
-    std::cout << s.top() << std::endl;
-    std::cout << s.size() << std::endl;
-    std::cout << s << std::endl;
-
-    adstl::stack<Foo> s1 = std::move(s);
     // std::cout << s.top() << std::endl;
-    std::cout << s1 << std::endl;
+    // std::cout << s.size() << std::endl;
+    // std::cout << s << std::endl;
 
-    adstl::stack<Foo> s2;
-    s2 = s1;
-
-    adstl::stack<Foo> s3;
-    s3 = std::move(s1);
-
+    // adstl::stack<Foo> s1 = std::move(s);
+    // // std::cout << s.top() << std::endl;
     // std::cout << s1 << std::endl;
-    std::cout << s3 << std::endl;
 
+    // adstl::stack<Foo> s2;
+    // s2 = s1;
+
+    // adstl::stack<Foo> s3;
+    // s3 = std::move(s1);
+
+    // // std::cout << s1 << std::endl;
+    // std::cout << s3 << std::endl;
+
+    adstl::vector<Foo> vec;
+    vec.emplace_back(Foo(1,2));
+    vec.emplace_back(32,3333);
+    vec.emplace_back(32,123, new int(2312));
+
+    adstl::vector<Foo>::const_iterator b = vec.cbegin();
+    adstl::vector<Foo>::const_iterator e = vec.cend();
+
+    while(b != e)
+    {
+        std::cout << *b << " ";
+        ++b;
+        // *b = Foo();
+    }
+    std::cout << std::endl;
     
 
     return 0;

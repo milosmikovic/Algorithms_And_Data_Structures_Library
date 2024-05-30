@@ -17,8 +17,14 @@ class vector final
 
     friend std::ostream& operator<< <T>(std::ostream&, const vector<T>&);
 
+    private:
+        class iterator;
+        class const_iterator;
+
     public:
         typedef T v_type;
+        typedef iterator iterator;
+        typedef const_iterator const_iterator;
         
         static void change_realloc_size(const size_t sz)
         {
@@ -40,15 +46,19 @@ class vector final
 
         void push_back(const T&);  // copy the element
         void push_back(T&&); // move the element
-        void pop_back();
+        template <typename ... Args>
+        void emplace_back(Args&& ...); // construct element in place
+        void pop_back(); // destroy back element
 
         // add elements
         size_t size() const { return first_free - elements; }
         size_t capacity() const { return cap - elements; }
 
         // iterator interface
-        T* begin() const { return elements; }
-        T* end() const { return first_free; }
+        iterator begin() { return iterator(elements); }
+        iterator end() { return iterator(first_free); }
+        const_iterator cbegin() const { return const_iterator(elements); }
+        const_iterator cend() const { return const_iterator(first_free); }
 
         T& operator[](std::size_t n) 
             { return elements[n]; }
@@ -57,6 +67,58 @@ class vector final
             { return elements[n]; }
 
     private:
+        
+        class iterator
+        {
+            public:
+                iterator(T *it) : it(it) {}
+
+                T& operator*() const 
+                {
+                    return *it;
+                }
+
+                iterator& operator++()
+                {
+                    ++it;
+                    return *this;
+                }
+
+                bool operator!=(const iterator &rhs) const
+                {
+                    return it != rhs.it;
+                }
+
+            private:
+                T *it;
+        };
+
+        class const_iterator
+        {
+            public:
+                const_iterator(T *it) : it(it) {}
+
+                const T& operator*() const 
+                {
+                    return *it;
+                }
+
+                const_iterator& operator++()
+                {
+                    ++it;
+                    return *this;
+                }
+
+                bool operator!=(const const_iterator &rhs) const
+                {
+                    return it != rhs.it;
+                }
+
+            private:
+                T *it;
+        };
+
+
         static std::allocator<T> alloc;
         static size_t reallocate_size;
 
@@ -185,6 +247,14 @@ inline void vector<T>::push_back(T &&elem)
 
     // construct a copy of s in the element to which first_free points
     alloc.construct(first_free++, std::move(elem));  
+}
+
+template <typename T>
+template <typename ... Args>
+void vector<T>::emplace_back(Args&& ... args)
+{
+    chk_n_alloc();
+    alloc.construct(first_free++, std::forward<Args>(args) ...);
 }
 
 template <typename T>
