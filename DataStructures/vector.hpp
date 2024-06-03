@@ -49,6 +49,8 @@ class vector final
         template <typename ... Args>
         void emplace_back(Args&& ...); // construct element in place
         void pop_back(); // destroy back element
+        iterator insert(const_iterator, const T&);
+        iterator insert(const_iterator, T&&); 
 
         // add elements
         size_t size() const { return first_free - elements; }
@@ -70,6 +72,9 @@ class vector final
         
         class iterator
         {
+            
+            friend class vector<T>;
+
             public:
                 iterator(T *it) : it(it) {}
 
@@ -89,12 +94,25 @@ class vector final
                     return it != rhs.it;
                 }
 
+                iterator operator+(const size_t sz)
+                {
+                    return iterator(it + sz);
+                }
+
+                iterator operator-(const size_t sz)
+                {
+                    return iterator(it - sz);
+                }
+
             private:
                 T *it;
         };
 
         class const_iterator
         {
+
+            friend class vector<T>;
+
             public:
                 const_iterator(T *it) : it(it) {}
 
@@ -113,6 +131,17 @@ class vector final
                 {
                     return it != rhs.it;
                 }
+
+                const_iterator operator+(const size_t sz)
+                {
+                    return const_iterator(it + sz);
+                }
+
+                const_iterator operator-(const size_t sz)
+                {
+                    return const_iterator(it - sz);
+                }
+
 
             private:
                 T *it;
@@ -264,6 +293,95 @@ inline void vector<T>::pop_back()
         // Destroy the last element in the vector
         alloc.destroy(--first_free);
     }
+}
+
+
+template <typename T>
+typename vector<T>::iterator vector<T>::insert(const_iterator pos, const T &val)
+{
+
+    if(size() == 0 || pos.it == nullptr)
+    {
+        #ifdef ADSTL_THROWABLE
+        throw std::out_of_range("Inserting on empty vector, or on nullptr position.");
+        #endif
+
+        return end();
+    }
+    else if (pos.it < elements || pos.it > first_free)
+    {
+        #ifdef ADSTL_THROWABLE
+        throw std::out_of_range("Iterator out of range.");
+        #endif
+
+        return end();
+    }
+    
+
+    // save offset before reallocation, because reallocation can invalidate iterators
+    size_t insert_offset = pos.it - elements;
+
+    chk_n_alloc();
+
+    T *insert_pos = elements + insert_offset;
+    
+    if(insert_pos != first_free)
+    {
+        for(T *p = first_free; p != insert_pos; --p)
+        {
+            alloc.construct(p, std::move(*(p - 1)));
+            alloc.destroy(p - 1);
+        }
+    }
+
+    alloc.construct(insert_pos, val);
+    ++first_free;
+
+    return iterator(insert_pos);
+}
+
+template <typename T>
+typename vector<T>::iterator vector<T>::insert(const_iterator pos, T&& val)
+{
+
+    if(size() == 0 || pos.it == nullptr)
+    {
+        #ifdef ADSTL_THROWABLE
+        throw std::out_of_range("Inserting on empty vector, or on nullptr position.");
+        #endif
+
+        return end();
+    }
+    else if (pos.it < elements || pos.it > first_free)
+    {
+        #ifdef ADSTL_THROWABLE
+        throw std::out_of_range("Iterator out of range.");
+        #endif
+
+        return end();
+    }
+    
+
+    // save offset before reallocation, because reallocation can invalidate iterators
+    size_t insert_offset = pos.it - elements;
+
+    chk_n_alloc();
+
+    T *insert_pos = elements + insert_offset;
+    
+    if(insert_pos != first_free)
+    {
+        for(T *p = first_free; p != insert_pos; --p)
+        {
+            alloc.construct(p, std::move(*(p - 1)));
+            alloc.destroy(p - 1);
+        }
+    }
+
+    alloc.construct(insert_pos, std::move(val));
+    ++first_free;
+
+    return iterator(insert_pos);
 }
 
 

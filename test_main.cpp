@@ -243,21 +243,36 @@ int main(int argc, char **argv)
     // // std::cout << s1 << std::endl;
     // std::cout << s3 << std::endl;
 
+    // adstl::vector<Foo> vec;
+    // vec.emplace_back(Foo(1,2));
+    // vec.emplace_back(32,3333);
+    // vec.emplace_back(32,123, new int(2312));
+
+    // adstl::vector<Foo>::const_iterator b = vec.cbegin();
+    // adstl::vector<Foo>::const_iterator e = vec.cend();
+
+    // while(b != e)
+    // {
+    //     std::cout << *b << " ";
+    //     ++b;
+    //     // *b = Foo();
+    // }
+    // std::cout << std::endl;
+
+    // std::cout << vec << std::endl;
+
     adstl::vector<Foo> vec;
-    vec.emplace_back(Foo(1,2));
-    vec.emplace_back(32,3333);
-    vec.emplace_back(32,123, new int(2312));
+    vec.push_back(Foo(1,2));
+    vec.insert(vec.cbegin(), Foo(123,123));
+    vec.insert(vec.cend(), Foo(321,312));
+    vec.insert(vec.cbegin(), Foo(333,333));
+    vec.insert(vec.cend(), Foo(444,444));
+    vec.insert(vec.cbegin() + 2, Foo(777,777));
+    // vec.insert(vec.cbegin() - 1, Foo(9999,9999));
+    // vec.insert(vec.cbegin() + 7, Foo(9999,9999));
+    Foo f(987, 987);
+    vec.insert(vec.cbegin(), f);
 
-    adstl::vector<Foo>::const_iterator b = vec.cbegin();
-    adstl::vector<Foo>::const_iterator e = vec.cend();
-
-    while(b != e)
-    {
-        std::cout << *b << " ";
-        ++b;
-        // *b = Foo();
-    }
-    std::cout << std::endl;
 
     std::cout << vec << std::endl;
     
