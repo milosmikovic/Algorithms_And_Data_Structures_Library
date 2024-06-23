@@ -40,9 +40,10 @@ class sllist final
         class const_iterator;
 
     public:
-        typedef T l_type;
-        typedef iterator iterator;
-        typedef const_iterator const_iterator;
+    
+        using l_type = T;
+        using iterator = iterator;
+        using const_iterator = const_iterator;
 
         sllist() : head(nullptr), sz(0) {} // def ctor
         sllist(const sllist&); // copy ctor
@@ -371,10 +372,6 @@ void sllist<T>::clear()
 template <typename T>
 void sllist<T>::reverse()
 {
-    // nullptr
-    // 1-nullptr
-    // 1-2-3-nullptr
-
     Node<T> *prev_node = nullptr;
     Node<T> *current_node = head;
     Node<T> *next_node = nullptr;
@@ -388,10 +385,11 @@ void sllist<T>::reverse()
     }
 
     head = prev_node;
-
 }
 
 }
+
+
 
 
 #endif

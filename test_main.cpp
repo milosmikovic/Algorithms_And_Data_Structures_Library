@@ -284,6 +284,12 @@ int main(int argc, char **argv)
     list.reverse();
     std::cout << list << std::endl;
     
+    for(adstl::sllist<int>::iterator item = list.begin();item != list.end();++item)
+    {
+        std::cout << *item << std::endl;
+    }
+    
+    
 
     return 0;
 }

@@ -22,9 +22,10 @@ class vector final
         class const_iterator;
 
     public:
-        typedef T v_type;
-        typedef iterator iterator;
-        typedef const_iterator const_iterator;
+    
+        using v_type = T;
+        using iterator = iterator;
+        using const_iterator = const_iterator;
         
         static void change_realloc_size(const size_t sz)
         {

@@ -23,7 +23,7 @@ class stack final
 
     public:
 
-        typedef T s_type;
+        using s_type = T;
 
         stack() : data() {} // def ctor
         stack(const stack&); // cpy ctor
