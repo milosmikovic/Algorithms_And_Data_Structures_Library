@@ -30,7 +30,7 @@ class stack final
         stack(stack&&); // move ctor
 
         stack& operator=(const stack&); // cpy=
-        stack& operator=(stack&&);
+        stack& operator=(stack&&); // move=
 
         template <typename U> void push(U&&);
         void pop();

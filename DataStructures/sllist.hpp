@@ -67,6 +67,7 @@ class sllist final
         void pop_back(); // pop_back is so unefficient in singly linked list, complexity O(n)
         void clear();
         template <typename U> void insert(size_t, U&&);
+        void reverse();
 
     private:
 
@@ -365,6 +366,29 @@ void sllist<T>::clear()
     }
     head = nullptr;
     sz = 0;
+}
+
+template <typename T>
+void sllist<T>::reverse()
+{
+    // nullptr
+    // 1-nullptr
+    // 1-2-3-nullptr
+
+    Node<T> *prev_node = nullptr;
+    Node<T> *current_node = head;
+    Node<T> *next_node = nullptr;
+
+    while(current_node != nullptr)
+    {
+        next_node = current_node->next;
+        current_node->next = prev_node;
+        prev_node = current_node;
+        current_node = next_node;
+    }
+
+    head = prev_node;
+
 }
 
 }

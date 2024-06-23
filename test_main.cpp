@@ -261,20 +261,28 @@ int main(int argc, char **argv)
 
     // std::cout << vec << std::endl;
 
-    adstl::vector<Foo> vec;
-    vec.push_back(Foo(1,2));
-    vec.insert(vec.cbegin(), Foo(123,123));
-    vec.insert(vec.cend(), Foo(321,312));
-    vec.insert(vec.cbegin(), Foo(333,333));
-    vec.insert(vec.cend(), Foo(444,444));
-    vec.insert(vec.cbegin() + 2, Foo(777,777));
-    // vec.insert(vec.cbegin() - 1, Foo(9999,9999));
-    // vec.insert(vec.cbegin() + 7, Foo(9999,9999));
-    Foo f(987, 987);
-    vec.insert(vec.cbegin(), f);
+    // adstl::vector<Foo> vec;
+    // vec.push_back(Foo(1,2));
+    // vec.insert(vec.cbegin(), Foo(123,123));
+    // vec.insert(vec.cend(), Foo(321,312));
+    // vec.insert(vec.cbegin(), Foo(333,333));
+    // vec.insert(vec.cend(), Foo(444,444));
+    // vec.insert(vec.cbegin() + 2, Foo(777,777));
+    // // vec.insert(vec.cbegin() - 1, Foo(9999,9999));
+    // // vec.insert(vec.cbegin() + 7, Foo(9999,9999));
+    // Foo f(987, 987);
+    // vec.insert(vec.cbegin(), f);
 
 
-    std::cout << vec << std::endl;
+    // std::cout << vec << std::endl;
+
+    adstl::sllist<int> list;
+    list.push_back(1);
+    list.push_back(2);
+    list.push_back(3);
+    std::cout << list << std::endl;
+    list.reverse();
+    std::cout << list << std::endl;
     
 
     return 0;
